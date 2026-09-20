@@ -1,93 +1,21 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Beatitudes International School — Secure Portal</title>
-<style>
-:root{--navy:#06264d;--blue:#0b4179;--gold:#d7a52a;--bg:#f4f7fb;--text:#182235;--muted:#6d7686;--line:#e4e9f0;--green:#168a46;--red:#b42318}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--text)}
-.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,var(--navy),var(--blue))}
-.box{background:#fff;width:430px;max-width:100%;border-radius:20px;padding:30px;box-shadow:0 20px 60px #0004}.crest{width:58px;height:58px;border:3px solid var(--gold);border-radius:15px;background:var(--navy);display:grid;place-items:center;color:var(--gold);font-weight:800;margin-bottom:18px}
-h1{font-size:23px;margin:0}p{font-size:13px;color:var(--muted);line-height:1.5}.input{width:100%;padding:12px;margin:6px 0;border:1px solid var(--line);border-radius:9px}.btn{border:0;border-radius:9px;padding:11px 15px;background:var(--navy);color:#fff;font-weight:700;cursor:pointer}.btn.gold{background:var(--gold);color:#182235}.login .btn{width:100%;margin-top:10px}.note{font-size:11px;color:var(--muted);margin-top:12px}.error{color:var(--red);font-size:12px}.app{display:none}.top{height:68px;background:var(--navy);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 25px}.brand{display:flex;align-items:center;gap:10px}.mini{width:40px;height:40px;border:2px solid var(--gold);border-radius:10px;display:grid;place-items:center;color:var(--gold);font-weight:800;font-size:11px}.brand b{font-size:13px}.brand small{display:block;color:#e9c86b;font-size:9px}.logout{background:transparent;border:1px solid #ffffff55;color:#fff;border-radius:8px;padding:8px 12px}
-.layout{display:flex;min-height:calc(100vh - 68px)}aside{width:225px;background:#fff;border-right:1px solid var(--line);padding:15px}nav button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:11px 12px;border-radius:9px;margin:2px 0;color:#4f5a6b;font-weight:600;cursor:pointer}nav button.active,nav button:hover{background:#eef3f9;color:var(--navy)}
-main{flex:1;padding:25px;max-width:1400px;width:100%;margin:auto}.screen{display:none}.screen.active{display:block}.sub{font-size:13px;color:var(--muted);margin:6px 0 20px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 2px 9px #17365d0b}.metric span{font-size:11px;color:var(--muted)}.metric strong{display:block;font-size:28px;color:var(--navy);margin-top:7px}.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.search{padding:10px;border:1px solid var(--line);border-radius:9px;width:280px}.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left}.table th{color:var(--muted);font-size:10px;text-transform:uppercase}.pill{font-size:10px;padding:4px 7px;border-radius:20px;background:#edf7f0;color:var(--green);font-weight:bold}.status{font-size:12px;margin:8px 0}.ok{color:var(--green)}.err{color:var(--red)}.modal{display:none;position:fixed;inset:0;background:#0006;align-items:center;justify-content:center;padding:20px;z-index:20}.modalbox{background:#fff;border-radius:16px;padding:20px;width:650px;max-width:100%}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid input,.formgrid select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px}.full{grid-column:1/-1}
-@media(max-width:850px){aside{display:none}.cards{grid-template-columns:1fr 1fr}main{padding:16px}.formgrid{grid-template-columns:1fr}.search{width:100%}.toolbar{flex-direction:column;align-items:stretch}}
-</style>
-</head>
-<body>
-
-<div id="login" class="login">
-<div class="box">
-<div class="crest">BIS</div>
-<h1>Beatitudes International School</h1>
-<p><b>Secure School Portal</b><br>Management, teacher and parent access.</p>
-<input id="email" class="input" type="email" placeholder="Email address">
-<input id="password" class="input" type="password" placeholder="Password">
-<button class="btn" onclick="signIn()">Sign in</button>
-<div id="loginMsg" class="status"></div>
-<div class="note">Production security is designed for Supabase Auth + PostgreSQL Row Level Security. Configure the supplied SQL and environment values before using real pupil data.</div>
-</div></div>
-
-<div id="app" class="app">
-<header class="top"><div class="brand"><div class="mini">BIS</div><div><b>BEATITUDES INTERNATIONAL SCHOOL</b><small>INSPIRING EXCELLENCE · SECURE PORTAL</small></div></div><button class="logout" onclick="signOut()">Sign out</button></header>
-<div class="layout"><aside><nav>
-<button class="active" onclick="show('dashboard',this)">⌂ Dashboard</button>
-<button onclick="show('pupils',this)">👨‍🎓 Pupil Register</button>
-<button onclick="show('parents',this)">👨‍👩‍👧 Parents</button>
-<button onclick="show('attendance',this)">📅 Attendance</button>
-<button onclick="show('fees',this)">💰 Fees</button>
-<button onclick="show('academics',this)">📚 Academics</button>
-<button onclick="show('notices',this)">📢 Notices</button>
-</nav></aside>
-<main>
-<section id="dashboard" class="screen active">
-<h1>Management Dashboard</h1><div class="sub">Secure management view with live public enrolment statistics.</div>
-<div class="cards">
-<div class="card metric"><span>Total Enrolment</span><strong id="total">—</strong></div>
-<div class="card metric"><span>Classes</span><strong id="classes">—</strong></div>
-<div class="card metric"><span>Tuition / Term</span><strong>K2,000</strong></div>
-<div class="card metric"><span>School Year</span><strong>2027</strong></div>
-</div>
-<div class="card" style="margin-top:14px"><div class="toolbar"><b>Live Enrolment</b><button class="btn gold" onclick="loadStats()">Refresh</button></div><div id="apiStatus" class="status">Connecting…</div><div id="classlist"></div></div>
-</section>
-  <div class="card" style="margin-top:14px">
-<h2>Quick Actions</h2>
-<div class="toolbar">
-<button class="btn" onclick="show('pupils',this)">👨‍🎓 Pupils</button>
-<button class="btn" onclick="show('parents',this)">👨‍👩‍👧 Parents</button>
-<button class="btn" onclick="show('attendance',this)">📅 Attendance</button>
-<button class="btn" onclick="show('fees',this)">💰 Fees</button>
-<button class="btn" onclick="show('academics',this)">📚 Academics</button>
-<button class="btn" onclick="show('notices',this)">📢 Notices</button>
-<button class="btn gold" onclick="loadStats()">🔄 Refresh Enrolment</button>
-</div>
-  </div>
-
-<section id="pupils" class="screen"><h1>Pupil Register</h1><div class="sub">Production design: records are stored in the secure database and protected by user roles.</div>
-<div class="card"><div class="toolbar"><input id="search" class="search" placeholder="Search name or admission number"><button class="btn gold" onclick="openPupil()">+ Add Pupil</button></div><div id="pupilNotice" class="status"><span class="pill">DATABASE READY</span> Configure Supabase credentials to activate records.</div><div id="pupilTable"></div></div></section>
-
-<section id="parents" class="screen"><h1>Parents & Guardians</h1><div class="sub">Parent accounts will be linked to their children through the secure database.</div><div class="card"><span class="pill">ROLE-BASED ACCESS</span><p>Parents will only be able to see records linked to their own children.</p></div></section>
-<section id="attendance" class="screen"><h1>Attendance</h1><div class="sub">Teacher entry and management reporting.</div><div class="card"><span class="pill">NEXT MODULE</span><p>Class → pupil → Present / Absent / Late → Save. Management will receive daily and monthly summaries.</p></div></section>
-<section id="fees" class="screen"><h1>Fees</h1><div class="sub">Current Beatitudes fee structure.</div><div class="card"><table class="table"><tr><th>Item</th><th>Amount</th><th>Frequency</th></tr><tr><td>Tuition</td><td>K2,000</td><td>Term</td></tr><tr><td>Development</td><td>K300</td><td>Year</td></tr><tr><td>Cleaning Materials & Toiletries</td><td>K350</td><td>Term</td></tr><tr><td>Canteen</td><td>K900</td><td>Term</td></tr><tr><td>Registration</td><td>K30</td><td>Once</td></tr></table></div></section>
-<section id="academics" class="screen"><h1>Academics</h1><div class="sub">Subjects, assessments and report cards.</div><div class="card"><span class="pill">NEXT MODULE</span><p>Teacher assessment entry and report-card generation will use the same secure pupil database.</p></div></section>
-<section id="notices" class="screen"><h1>Notices</h1><div class="sub">School announcements.</div><div class="card"><b>Beatitudes International School</b><p>Inspiring Excellence</p><span class="pill">READY FOR DATABASE CONNECTION</span></div></section>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Beatitudes International School — Secure Portal</title><link rel="stylesheet" href="/assets/app.css"></head><body>
+<div id="login" class="login"><div class="login-card"><div class="crest">BIS</div><p class="eyebrow">INSPIRING EXCELLENCE</p><h1>Beatitudes International School</h1><p>Secure management and teacher portal</p><form id="loginForm"><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button class="primary" type="submit">Sign in securely</button><div id="loginMsg" class="status" role="alert"></div></form><p class="security-note">Access is restricted to authorised school staff. Activity is protected by role-based permissions.</p></div></div>
+<div id="app" hidden><header><div class="brand"><div class="crest small">BIS</div><div><b>BEATITUDES INTERNATIONAL SCHOOL</b><small>SECURE STAFF PORTAL</small></div></div><div class="user"><span id="userName"></span><span id="roleBadge" class="badge"></span><button id="logout" class="outline">Sign out</button></div></header>
+<div class="shell"><aside><nav id="nav"></nav></aside><main>
+<section id="dashboard" class="screen active"><p class="eyebrow" id="dashRole"></p><h1 id="dashTitle">Dashboard</h1><p class="sub" id="dashIntro"></p><div class="metrics"><article><span>Accessible pupils</span><strong id="pupilCount">—</strong></article><article><span>Accessible classes</span><strong id="classCount">—</strong></article><article><span>Primary tuition / term</span><strong>K2,000</strong></article><article><span>Secondary tuition / term</span><strong>K3,500</strong></article><article><span>School year</span><strong>2027</strong></article></div><article class="panel"><div class="panel-title"><div><h2>Live Enrolment</h2><p>Current public enrolment statistics</p></div><button class="secondary" data-action="stats">Refresh</button></div><div id="statsStatus" class="status">Connecting…</div><div id="classlist"></div></article><article class="panel"><h2>Quick Actions</h2><div id="quickActions" class="actions"></div></article></section>
+<section id="pupils" class="screen"><p class="eyebrow">STUDENT INFORMATION</p><h1>Pupil Register</h1><p class="sub" id="pupilSub"></p><article class="panel"><div class="panel-title"><input id="pupilSearch" placeholder="Search name or admission number"><button class="primary management" data-open="pupilForm">Add pupil</button></div><div id="pupilTable"></div></article></section>
+<section id="parents" class="screen management"><p class="eyebrow">FAMILY RECORDS</p><h1>Parents & Guardians</h1><article class="panel"><div class="panel-title"><p>Manage pupil family and contact details.</p><button class="primary" data-open="parentForm">Add parent</button></div><div id="parentTable"></div></article></section>
+<section id="attendance" class="screen"><p class="eyebrow">DAILY REGISTER</p><h1>Attendance</h1><article class="panel"><form id="attendanceForm" class="form-row"><label>Date<input name="attendanceDate" type="date" required></label><label>Pupil<select name="pupilId" class="pupil-select" required></select></label><label>Status<select name="status"><option>Present</option><option>Absent</option><option>Late</option></select></label><button class="primary">Save attendance</button></form><div id="attendanceTable"></div></article></section>
+<section id="fees" class="screen management"><p class="eyebrow">FINANCIAL RECORDS</p><h1>Fees & Payments</h1><article class="panel"><h2>Current fee information</h2><table><thead><tr><th>Item</th><th>Amount</th><th>Frequency</th></tr></thead><tbody><tr><td>Primary-school tuition</td><td>K2,000</td><td>Term</td></tr><tr><td>Secondary-school tuition</td><td>K3,500</td><td>Term</td></tr><tr><td>Development</td><td>K300</td><td>Year</td></tr><tr><td>Cleaning Materials & Toiletries</td><td>K350</td><td>Term</td></tr><tr><td>Canteen</td><td>K900</td><td>Term</td></tr><tr><td>Registration</td><td>K30</td><td>Once</td></tr></tbody></table></article><article class="panel"><div class="panel-title"><h2>Payment records</h2><button class="primary" data-open="feeForm">Add payment record</button></div><div id="feeTable"></div></article></section>
+<section id="academics" class="screen"><p class="eyebrow">ASSESSMENTS</p><h1>Academic Records</h1><article class="panel"><form id="resultForm" class="form-row"><label>Pupil<select name="pupilId" class="pupil-select" required></select></label><label>Subject<input name="subject" required></label><label>Assessment<input name="assessment" required></label><label>Term<input name="term" placeholder="Term 1" required></label><label>Score<input name="score" type="number" min="0" step="0.01" required></label><label>Out of<input name="maximumScore" type="number" min="1" value="100" required></label><button class="primary">Save result</button></form><div id="resultTable"></div></article></section>
+<section id="notices" class="screen"><p class="eyebrow">SCHOOL COMMUNICATIONS</p><h1>Notices</h1><article class="panel"><button class="primary management" data-open="noticeForm">Publish notice</button><div id="noticeList" class="notice-list"></div></article></section>
+<section id="staff" class="screen management"><p class="eyebrow">ADMINISTRATION</p><h1>Staff & Teachers</h1><article class="panel"><div class="panel-title"><p>Create secure accounts and assign teachers to classes.</p><button class="primary" data-open="staffForm">Add staff account</button></div><div id="staffTable"></div></article></section>
 </main></div></div>
-
-<div id="modal" class="modal"><div class="modalbox"><div class="toolbar"><h2>Add Pupil</h2><button class="btn" onclick="closePupil()">Close</button></div>
-<p class="sub">This form is ready for secure database insertion after Supabase configuration.</p>
-<div class="formgrid">
-<input id="pn" placeholder="Pupil full name"><select id="pc"><option>Baby Class</option><option>Middle Class</option><option>Reception</option><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Form 1</option></select>
-<select id="pg"><option>Female</option><option>Male</option></select><input id="pa" placeholder="Admission number"><input id="pp" placeholder="Parent/Guardian name"><input id="pt" placeholder="Parent phone">
-<div class="full"><button class="btn gold" onclick="savePupil()">Save Pupil</button></div></div><div id="saveMsg" class="status"></div></div></div>
-
-<script>
-const API="https://script.google.com/macros/s/AKfycbwJoOXxjTEcqVCpriSAGDWx_HaN_BliK1wa9_N3UMH44Yusz7_WglYYNDiEAcmTf4cv/exec";
-function signIn(){const e=document.getElementById("email").value.trim(),p=document.getElementById("password").value;if(!e||!p){document.getElementById("loginMsg").innerHTML='<span class="err">Enter your email and password.</span>';return}document.getElementById("login").style.display="none";document.getElementById("app").style.display="block";loadStats()}
-function signOut(){document.getElementById("app").style.display="none";document.getElementById("login").style.display="grid"}
-function show(id,btn){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active")}
-async function loadStats(){try{const r=await fetch(API,{cache:"no-store"});const d=await r.json();document.getElementById("total").textContent=d.total??0;document.getElementById("classes").textContent=Object.keys(d.classCounts||{}).length;document.getElementById("apiStatus").innerHTML='<span class="ok">● Live Google Sheet statistics connected</span>';document.getElementById("classlist").innerHTML='<table class="table"><tr><th>Class</th><th>Pupils</th></tr>'+Object.entries(d.classCounts||{}).map(([k,v])=>`<tr><td>${k}</td><td><b>${v}</b></td></tr>`).join("")+"</table>"}catch(e){document.getElementById("apiStatus").innerHTML='<span class="err">Live statistics could not be loaded.</span>'}}
-function openPupil(){document.getElementById("modal").style.display="flex"}function closePupil(){document.getElementById("modal").style.display="none"}function savePupil(){document.getElementById("saveMsg").innerHTML='<span class="ok">Form captured. Configure Supabase to save this securely.</span>'}
-</script>
-</body>
-</html>
+<dialog id="pupilForm"><form method="dialog" data-submit="pupil"><h2>Add pupil</h2><label>Full name<input name="fullName" required></label><label>Admission number<input name="admissionNumber" required></label><label>Class<select name="classId" class="class-select" required></select></label><label>Gender<select name="gender"><option value="">Not specified</option><option>Female</option><option>Male</option></select></label><label>Date of birth<input name="dateOfBirth" type="date"></label><label>Parent<select name="parentId" id="parentSelect"><option value="">Not linked</option></select></label><div class="dialog-actions"><button value="cancel" class="outline">Cancel</button><button value="default" class="primary">Save pupil</button></div><div class="status"></div></form></dialog>
+<dialog id="parentForm"><form method="dialog" data-submit="parent"><h2>Add parent or guardian</h2><label>Full name<input name="fullName" required></label><label>Phone<input name="phone" required></label><label>Email<input name="email" type="email"></label><label>Address<textarea name="address"></textarea></label><div class="dialog-actions"><button value="cancel" class="outline">Cancel</button><button value="default" class="primary">Save parent</button></div><div class="status"></div></form></dialog>
+<dialog id="feeForm"><form method="dialog" data-submit="fee"><h2>Add payment record</h2><label>Pupil<select name="pupilId" class="pupil-select" required></select></label><label>Term<input name="term" required></label><label>Item<input name="item" required></label><label>Amount due<input name="amountDue" type="number" min="0" step="0.01" required></label><label>Amount paid<input name="amountPaid" type="number" min="0" step="0.01" required></label><label>Payment date<input name="paymentDate" type="date"></label><label>Reference<input name="reference"></label><div class="dialog-actions"><button value="cancel" class="outline">Cancel</button><button value="default" class="primary">Save record</button></div><div class="status"></div></form></dialog>
+<dialog id="noticeForm"><form method="dialog" data-submit="notice"><h2>Publish notice</h2><label>Title<input name="title" required></label><label>Audience<select name="audience"><option value="all">All staff</option><option value="teachers">Teachers</option><option value="management">Management</option></select></label><label>Message<textarea name="body" required></textarea></label><div class="dialog-actions"><button value="cancel" class="outline">Cancel</button><button value="default" class="primary">Publish</button></div><div class="status"></div></form></dialog>
+<dialog id="staffForm"><form method="dialog" data-submit="staff"><h2>Add staff account</h2><label>Full name<input name="fullName" required></label><label>Email<input name="email" type="email" required></label><label>Phone<input name="phone"></label><label>Role<select name="role" id="staffRole"><option value="teacher">Teacher</option><option value="management">Management</option></select></label><label>Temporary password<input name="password" type="password" minlength="8" required></label><fieldset id="staffClasses"><legend>Assigned classes</legend><div id="classChecks"></div></fieldset><p class="security-note">Share the temporary password securely and ask the staff member to change it.</p><div class="dialog-actions"><button value="cancel" class="outline">Cancel</button><button value="default" class="primary">Create account</button></div><div class="status"></div></form></dialog>
+<dialog id="assignmentForm"><form method="dialog" data-submit="assignment"><h2>Manage staff access</h2><input name="staffId" type="hidden"><label>Role<select name="role"><option value="teacher">Teacher</option><option value="management">Management</option></select></label><label>Status<select name="active"><option value="true">Active</option><option value="false">Inactive</option></select></label><fieldset><legend>Teacher class assignments</legend><div id="assignmentChecks"></div></fieldset><div class="dialog-actions"><button value="cancel" class="outline">Cancel</button><button value="default" class="primary">Update access</button></div><div class="status"></div></form></dialog>
+<div id="toast" role="status"></div><script src="/assets/app.js" defer></script></body></html>

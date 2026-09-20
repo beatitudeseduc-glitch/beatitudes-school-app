@@ -21,6 +21,12 @@ create table if not exists public.classes (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.teacher_classes (
+  teacher_id uuid not null references public.profiles(id) on delete cascade,
+  class_id uuid not null references public.classes(id) on delete cascade,
+  primary key (teacher_id, class_id)
+);
+
 create table if not exists public.pupils (
   id uuid primary key default gen_random_uuid(),
   admission_number text unique not null,
@@ -81,6 +87,7 @@ on conflict(name) do nothing;
 
 alter table public.profiles enable row level security;
 alter table public.classes enable row level security;
+alter table public.teacher_classes enable row level security;
 alter table public.pupils enable row level security;
 alter table public.attendance enable row level security;
 alter table public.fees enable row level security;
@@ -104,15 +111,34 @@ for select using (public.my_role() = 'management');
 create policy "classes authenticated read" on public.classes
 for select using (auth.uid() is not null);
 
+create policy "management teacher assignments" on public.teacher_classes
+for all using (public.my_role() = 'management') with check (public.my_role() = 'management');
+
+create policy "teacher reads own assignments" on public.teacher_classes
+for select using (teacher_id = auth.uid());
+
 create policy "management full pupils" on public.pupils
 for all using (public.my_role() = 'management') with check (public.my_role() = 'management');
 
 create policy "parent read own pupil" on public.pupils
 for select using (parent_id = auth.uid());
 
+create policy "teacher read assigned pupils" on public.pupils
+for select using (public.my_role() = 'teacher' and exists (
+  select 1 from public.teacher_classes tc where tc.teacher_id = auth.uid() and tc.class_id = pupils.class_id
+));
+
 create policy "management attendance" on public.attendance
-for all using (public.my_role() in ('management','teacher'))
-with check (public.my_role() in ('management','teacher'));
+for all using (public.my_role() = 'management') with check (public.my_role() = 'management');
+
+create policy "teacher assigned attendance" on public.attendance
+for all using (public.my_role() = 'teacher' and exists (
+  select 1 from public.pupils p join public.teacher_classes tc on tc.class_id = p.class_id
+  where p.id = attendance.pupil_id and tc.teacher_id = auth.uid()
+)) with check (public.my_role() = 'teacher' and exists (
+  select 1 from public.pupils p join public.teacher_classes tc on tc.class_id = p.class_id
+  where p.id = attendance.pupil_id and tc.teacher_id = auth.uid()
+));
 
 create policy "parent read own attendance" on public.attendance
 for select using (exists(select 1 from public.pupils p where p.id=pupil_id and p.parent_id=auth.uid()));
@@ -125,8 +151,16 @@ create policy "parent read own fees" on public.fees
 for select using (exists(select 1 from public.pupils p where p.id=pupil_id and p.parent_id=auth.uid()));
 
 create policy "management academics" on public.assessments
-for all using (public.my_role() in ('management','teacher'))
-with check (public.my_role() in ('management','teacher'));
+for all using (public.my_role() = 'management') with check (public.my_role() = 'management');
+
+create policy "teacher assigned academics" on public.assessments
+for all using (public.my_role() = 'teacher' and exists (
+  select 1 from public.pupils p join public.teacher_classes tc on tc.class_id = p.class_id
+  where p.id = assessments.pupil_id and tc.teacher_id = auth.uid()
+)) with check (public.my_role() = 'teacher' and exists (
+  select 1 from public.pupils p join public.teacher_classes tc on tc.class_id = p.class_id
+  where p.id = assessments.pupil_id and tc.teacher_id = auth.uid()
+));
 
 create policy "parent read own academics" on public.assessments
 for select using (exists(select 1 from public.pupils p where p.id=pupil_id and p.parent_id=auth.uid()));
