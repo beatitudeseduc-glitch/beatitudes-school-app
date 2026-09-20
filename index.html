@@ -51,6 +51,18 @@ main{flex:1;padding:25px;max-width:1400px;width:100%;margin:auto}.screen{display
 </div>
 <div class="card" style="margin-top:14px"><div class="toolbar"><b>Live Enrolment</b><button class="btn gold" onclick="loadStats()">Refresh</button></div><div id="apiStatus" class="status">Connecting…</div><div id="classlist"></div></div>
 </section>
+  <div class="card" style="margin-top:14px">
+<h2>Quick Actions</h2>
+<div class="toolbar">
+<button class="btn" onclick="show('pupils',this)">👨‍🎓 Pupils</button>
+<button class="btn" onclick="show('parents',this)">👨‍👩‍👧 Parents</button>
+<button class="btn" onclick="show('attendance',this)">📅 Attendance</button>
+<button class="btn" onclick="show('fees',this)">💰 Fees</button>
+<button class="btn" onclick="show('academics',this)">📚 Academics</button>
+<button class="btn" onclick="show('notices',this)">📢 Notices</button>
+<button class="btn gold" onclick="loadStats()">🔄 Refresh Enrolment</button>
+</div>
+  </div>
 
 <section id="pupils" class="screen"><h1>Pupil Register</h1><div class="sub">Production design: records are stored in the secure database and protected by user roles.</div>
 <div class="card"><div class="toolbar"><input id="search" class="search" placeholder="Search name or admission number"><button class="btn gold" onclick="openPupil()">+ Add Pupil</button></div><div id="pupilNotice" class="status"><span class="pill">DATABASE READY</span> Configure Supabase credentials to activate records.</div><div id="pupilTable"></div></div></section>
