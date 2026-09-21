@@ -1,0 +1,7 @@
+{
+  "name": "beatitudes-school-portal", "version": "1.0.0", "private": true, "type": "module",
+  "description": "Secure Beatitudes International School portal",
+  "scripts": { "test": "node --test" },
+  "dependencies": { "@netlify/database": "^2.0.1", "@netlify/functions": "^6.0.0", "@netlify/identity": "^2.0.0", "drizzle-orm": "^1.0.0-beta.22" },
+  "devDependencies": { "drizzle-kit": "^1.0.0-beta.22", "esbuild": "^0.28.2" }
+}
